@@ -1,0 +1,588 @@
+/* ==========================================================================
+   Operations console
+   ========================================================================== */
+
+.admin-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.queue-list {
+  display: grid;
+}
+
+.queue-list li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.queue-list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.queue-list__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  flex: 0 0 auto;
+}
+
+.queue-list__copy {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.queue-list__copy strong {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-list__copy span {
+  font-size: 0.68rem;
+  color: var(--muted-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 16px;
+  border-radius: 10px;
+  border: 1px dashed var(--border-strong);
+  background: rgba(56, 224, 176, 0.03);
+  color: var(--mint);
+  font-size: 0.8rem;
+}
+
+.admin-empty p {
+  color: var(--muted);
+}
+
+.admin-totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-totals > div {
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(150, 163, 214, 0.03);
+}
+
+.admin-totals span {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--muted-2);
+  margin-bottom: 2px;
+}
+
+.admin-totals strong {
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.admin-footnote {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 0.69rem;
+  color: var(--muted-2);
+  line-height: 1.5;
+}
+
+.admin-footnote svg {
+  color: var(--mint);
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.data-table--admin {
+  min-width: 900px;
+}
+
+.method-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.method-inline svg {
+  color: var(--violet-soft);
+}
+
+/* Admin request detail */
+
+.admin-detail {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(150, 163, 214, 0.03);
+}
+
+.admin-detail__grid span {
+  display: block;
+  font-size: 0.64rem;
+  color: var(--muted-2);
+  margin-bottom: 3px;
+}
+
+.admin-detail__grid strong {
+  display: block;
+  font-size: 0.8rem;
+}
+
+.admin-detail__grid small {
+  display: block;
+  font-size: 0.67rem;
+  color: var(--muted-2);
+}
+
+.destination-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 11px;
+  border: 1px solid var(--border);
+  background: rgba(9, 11, 22, 0.4);
+}
+
+.destination-box > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.destination-box .muted {
+  font-size: 0.66rem;
+}
+
+.destination-box code {
+  font-size: 0.82rem;
+  word-break: break-all;
+}
+
+.destination-note {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin-top: -6px;
+  font-size: 0.67rem;
+  color: var(--muted-2);
+  line-height: 1.5;
+}
+
+.destination-note svg {
+  color: var(--mint);
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.destination-note code {
+  color: var(--muted);
+}
+
+.reject-box {
+  margin-top: 4px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 112, 136, 0.22);
+  background: rgba(255, 112, 136, 0.03);
+}
+
+.reject-box .mini-heading {
+  margin-top: 0;
+  color: #ffa4b4;
+}
+
+.reject-box .mini-heading svg {
+  color: var(--rose);
+}
+
+.reject-box p {
+  font-size: 0.75rem;
+  margin-bottom: 10px;
+}
+
+.reject-box textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: rgba(9, 11, 22, 0.55);
+  outline: none;
+  resize: vertical;
+  font-size: 0.8rem;
+}
+
+.reject-box textarea:focus {
+  border-color: rgba(255, 112, 136, 0.5);
+}
+
+/* Appeals */
+
+.appeal-list {
+  display: grid;
+  gap: 16px;
+}
+
+.appeal-card {
+  padding: 22px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(139, 108, 255, 0.28);
+  background:
+    radial-gradient(420px 200px at 100% 0%, rgba(139, 108, 255, 0.09), transparent 65%),
+    rgba(21, 24, 43, 0.72);
+}
+
+.appeal-card__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.appeal-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: rgba(139, 108, 255, 0.13);
+  color: var(--violet-soft);
+  flex: 0 0 auto;
+}
+
+.appeal-card__head h2 {
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.appeal-card__head p {
+  font-size: 0.71rem;
+  color: var(--muted-2);
+  margin-top: 2px;
+}
+
+.appeal-card__reward {
+  margin-left: auto;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--mint);
+  white-space: nowrap;
+}
+
+.appeal-card__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.appeal-quote {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(150, 163, 214, 0.03);
+}
+
+.appeal-quote span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.65rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-2);
+  margin-bottom: 6px;
+}
+
+.appeal-quote.is-reason span svg {
+  color: var(--rose);
+}
+
+.appeal-quote.is-appeal {
+  border-color: rgba(139, 108, 255, 0.24);
+  background: rgba(139, 108, 255, 0.05);
+}
+
+.appeal-quote.is-appeal span svg {
+  color: var(--violet-soft);
+}
+
+.appeal-quote p {
+  font-size: 0.79rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.appeal-card__meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 0.67rem;
+  color: var(--muted-2);
+}
+
+.appeal-card__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.appeal-card__meta code {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(150, 163, 214, 0.08);
+}
+
+.appeal-card__decision {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.appeal-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.resolved-list {
+  display: grid;
+}
+
+.resolved-list li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.resolved-list li:first-child {
+  border-top: 0;
+}
+
+.resolved-list__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  flex: 0 0 auto;
+}
+
+.resolved-list__icon.is-ok {
+  background: rgba(56, 224, 176, 0.1);
+  color: var(--mint);
+}
+
+.resolved-list__icon.is-no {
+  background: rgba(255, 112, 136, 0.1);
+  color: var(--rose);
+}
+
+.resolved-list__copy {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.resolved-list__copy strong {
+  font-size: 0.79rem;
+}
+
+.resolved-list__copy span {
+  font-size: 0.69rem;
+  color: var(--muted-2);
+}
+
+/* Admin tickets */
+
+.admin-ticket-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-ticket {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(21, 24, 43, 0.66);
+  overflow: hidden;
+}
+
+.admin-ticket.is-open {
+  border-color: var(--border-strong);
+}
+
+.admin-ticket__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 15px 18px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-ticket__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  flex: 0 0 auto;
+}
+
+.admin-ticket__copy {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-ticket__copy strong {
+  font-size: 0.83rem;
+}
+
+.admin-ticket__copy span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  color: var(--muted-2);
+  flex-wrap: wrap;
+}
+
+.admin-ticket__count {
+  font-size: 0.68rem;
+  color: var(--muted-2);
+  white-space: nowrap;
+}
+
+.admin-ticket__body {
+  padding: 2px 18px 18px;
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+}
+
+.ticket-thread {
+  padding-top: 14px;
+}
+
+.admin-ticket__reply {
+  margin-top: 12px;
+}
+
+.admin-ticket__reply textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: rgba(9, 11, 22, 0.55);
+  outline: none;
+  resize: vertical;
+  font-size: 0.8rem;
+}
+
+.admin-ticket__reply textarea:focus {
+  border-color: rgba(139, 108, 255, 0.6);
+}
+
+.admin-ticket__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+@media (max-width: 1024px) {
+  .admin-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-detail__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .appeal-card__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .appeal-card__head {
+    flex-wrap: wrap;
+  }
+
+  .appeal-card__reward {
+    margin-left: 54px;
+  }
+
+  .admin-ticket__head {
+    flex-wrap: wrap;
+  }
+
+  .admin-ticket__copy {
+    flex-basis: calc(100% - 54px);
+  }
+
+  .admin-ticket__count {
+    display: none;
+  }
+
+  .resolved-list li {
+    flex-wrap: wrap;
+  }
+
+  .admin-detail__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-detail__grid,
+  .admin-totals {
+    grid-template-columns: 1fr;
+  }
+}
