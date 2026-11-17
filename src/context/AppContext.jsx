@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import {
   advanceRedemption,
   appealSubmission,
+  awardGameXp,
   balanceOf,
   cancelRedemption,
   claimDaily,
@@ -142,6 +143,7 @@ export function AppProvider({ children }) {
         refresh();
       },
       claimDaily: memberAction((userId) => claimDaily(userId)),
+      awardGameXp: memberAction((userId, payload) => awardGameXp(userId, payload)),
       startTask: memberAction((userId, taskId) => startTask(userId, taskId)),
       appeal: memberAction((userId, submissionId, message) =>
         appealSubmission(userId, submissionId, message),

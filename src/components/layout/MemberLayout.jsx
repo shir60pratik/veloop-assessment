@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   ShieldCheck,
+  Trophy,
   Wallet,
   X,
 } from 'lucide-react';
@@ -18,9 +19,11 @@ import { useApp } from '../../context/AppContext';
 import { Avatar, Logo, StatusPill } from '../ui';
 import { formatNumber } from '../../lib/format';
 import { XP_PER_LEVEL } from '../../lib/constants';
+import { levelMeta } from '../../lib/levels';
 
 const NAV = [
   { to: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/app/levels', label: 'Levels', icon: Trophy },
   { to: '/app/tasks', label: 'Tasks', icon: ListChecks },
   { to: '/app/wallet', label: 'Wallet', icon: Wallet },
   { to: '/app/redeem', label: 'Redeem', icon: Banknote },
@@ -88,18 +91,22 @@ export function MemberLayout() {
         ))}
       </nav>
 
-      <div className="sidebar__level">
+      <Link to="/app/levels" className="sidebar__level" aria-label="Open your level journey">
         <div className="sidebar__level-head">
-          <span>Level {level.level}</span>
-          <span className="muted">{level.into}/{XP_PER_LEVEL} XP</span>
+          <span>Level {level.level}{level.isMax ? ' · Max' : ''}</span>
+          <span className="muted">
+            {level.isMax ? 'All badges' : `${level.into}/${XP_PER_LEVEL} XP`}
+          </span>
         </div>
         <div className="progress__track progress__track--thin">
           <span className="progress__fill tone-bg--violet" style={{ width: `${level.progress * 100}%` }} />
         </div>
         <p className="sidebar__level-hint">
-          {level.nextAt - member.xp} XP to Level {level.level + 1}
+          {level.isMax
+            ? `${levelMeta(level.level).name} — every badge unlocked.`
+            : `${level.nextAt - member.xp} XP to Level ${level.level + 1} · ${levelMeta(level.level + 1).name}`}
         </p>
-      </div>
+      </Link>
 
       <div className="sidebar__user">
         <Avatar name={member.name} color={member.avatarColor} />

@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminLogin from './pages/AdminLogin';
 import Dashboard from './pages/Dashboard';
+import Levels from './pages/Levels';
 import Tasks from './pages/Tasks';
 import Wallet from './pages/Wallet';
 import Redeem from './pages/Redeem';
@@ -28,6 +29,7 @@ const TITLES = {
   '/register': 'Create account · VELoop Rewards',
   '/admin/login': 'Operations sign in · VELoop Rewards',
   '/app/dashboard': 'Dashboard · VELoop Rewards',
+  '/app/levels': 'Level journey · VELoop Rewards',
   '/app/tasks': 'Activities · VELoop Rewards',
   '/app/wallet': 'Wallet · VELoop Rewards',
   '/app/redeem': 'Redeem VEs · VELoop Rewards',
@@ -71,6 +73,7 @@ export default function App() {
           <Route path="/app" element={<MemberLayout />}>
             <Route index element={<Navigate to="/app/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="levels" element={<Levels />} />
             <Route path="tasks" element={<Tasks />} />
             <Route path="wallet" element={<Wallet />} />
             <Route path="redeem" element={<Redeem />} />

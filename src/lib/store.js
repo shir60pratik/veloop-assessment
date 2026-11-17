@@ -5,6 +5,7 @@ import {
   REJECTION_REASONS,
   XP_PER_LEVEL,
 } from './constants';
+import { LEVELS, MAX_LEVEL, gameRunsForLevel } from './levels';
 import {
   maskDestination,
   todayKey,
@@ -102,13 +103,108 @@ export function pendingCreditsOf(db, userId) {
 }
 
 export function levelInfo(xp = 0) {
-  const level = Math.floor(xp / XP_PER_LEVEL) + 1;
-  const into = xp % XP_PER_LEVEL;
+  const rawLevel = Math.floor(xp / XP_PER_LEVEL) + 1;
+  const level = Math.min(rawLevel, MAX_LEVEL);
+  const isMax = level >= MAX_LEVEL;
+  const into = isMax ? XP_PER_LEVEL : xp % XP_PER_LEVEL;
   return {
     level,
     into,
-    nextAt: level * XP_PER_LEVEL,
-    progress: into / XP_PER_LEVEL,
+    nextAt: isMax ? xp : level * XP_PER_LEVEL,
+    progress: isMax ? 1 : into / XP_PER_LEVEL,
+    isMax,
+    rawLevel,
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ * XP and level rewards
+ * ------------------------------------------------------------------ */
+
+function ensureLevelRewardState(user) {
+  if (!Array.isArray(user.rewardedLevels)) {
+    const current = levelInfo(user.xp || 0).level;
+    user.rewardedLevels = LEVELS.filter((entry) => entry.level <= current).map((entry) => entry.level);
+  }
+}
+
+/**
+ * Single funnel for every XP change. Credits the one-time VE bonus for each
+ * level crossed, records it on the wallet ledger, and returns what happened.
+ */
+function grantXp(db, user, amount) {
+  ensureLevelRewardState(user);
+  const before = levelInfo(user.xp || 0).level;
+  user.xp = (user.xp || 0) + Math.max(0, Math.round(Number(amount) || 0));
+  const after = levelInfo(user.xp).level;
+  const bonuses = [];
+
+  LEVELS.filter((entry) => entry.level > before && entry.level <= after).forEach((entry) => {
+    if (user.rewardedLevels.includes(entry.level)) return;
+    user.rewardedLevels.push(entry.level);
+    addTransaction(
+      db,
+      user.id,
+      'credit',
+      entry.bonusVE,
+      `Level ${entry.level} bonus`,
+      `Reached ${entry.name}`,
+    );
+    bonuses.push(entry);
+  });
+
+  return { before, after, bonuses, amount: Math.max(0, Math.round(Number(amount) || 0)) };
+}
+
+export function gameRunsOf(db, userId) {
+  return (db.gameRuns || [])
+    .filter((run) => run.userId === userId)
+    .slice()
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+export function gameRunsToday(db, userId) {
+  const today = todayKey();
+  return gameRunsOf(db, userId).filter((run) => run.day === today);
+}
+
+export function awardGameXp(userId, { score = 0, xp = 0, pairs = 0, timeLeft = 0 } = {}) {
+  const db = getDB();
+  const user = userById(db, userId);
+  if (!user) throw new Error('Sign in again to keep playing.');
+
+  const info = levelInfo(user.xp || 0);
+  const limit = gameRunsForLevel(info.level);
+  const playedToday = gameRunsToday(db, userId).length;
+  if (playedToday >= limit) {
+    throw new Error(`You have used all ${limit} XP Match runs for today. Come back tomorrow.`);
+  }
+
+  const safeXp = Math.max(0, Math.min(150, Math.round(Number(xp) || 0)));
+  const result = grantXp(db, user, safeXp);
+
+  const run = {
+    id: uid('game'),
+    userId,
+    day: todayKey(),
+    score: Math.max(0, Math.round(Number(score) || 0)),
+    xp: safeXp,
+    pairs: Math.max(0, Math.round(Number(pairs) || 0)),
+    timeLeft: Math.max(0, Math.round(Number(timeLeft) || 0)),
+    createdAt: nowIso(),
+  };
+  if (!Array.isArray(db.gameRuns)) db.gameRuns = [];
+  db.gameRuns.unshift(run);
+  persist(db);
+
+  return {
+    run,
+    xp: safeXp,
+    levelBefore: result.before,
+    levelAfter: result.after,
+    bonuses: result.bonuses,
+    playsLeft: Math.max(0, limit - playedToday - 1),
+    limit,
   };
 }
 
@@ -194,7 +290,7 @@ function addSubmissionCredit(db, submission, note) {
     note,
     `SUB-${submission.id.slice(-4).toUpperCase()}`,
   );
-  if (user) user.xp = (user.xp || 0) + Math.max(5, Math.round(submission.rewardVEs * 0.6));
+  if (user) grantXp(db, user, Math.max(5, Math.round(submission.rewardVEs * 0.6)));
 }
 
 function makeReference(db) {
@@ -300,7 +396,7 @@ export function claimDaily(userId) {
   const continued = user.lastCheckIn === yesterdayKey();
   user.streak = continued ? (user.streak || 0) + 1 : 1;
   user.lastCheckIn = today;
-  user.xp = (user.xp || 0) + 20;
+  grantXp(db, user, 20);
   addTransaction(db, userId, 'credit', 5, 'Daily check-in', `Streak day ${user.streak}`);
   persist(db);
   return { amount: 5, streak: user.streak };

@@ -28,6 +28,7 @@ import {
   vesToInr,
 } from '../lib/format';
 import { REWARD_STATUS, XP_PER_LEVEL } from '../lib/constants';
+import { levelMeta } from '../lib/levels';
 import { EmptyState, ProgressBar, SectionHeading, StatCard, StatusPill } from '../components/ui';
 import { TaskCard } from '../components/rewards/TaskCard';
 
@@ -135,8 +136,13 @@ export default function Dashboard() {
           </div>
           <ProgressBar value={level.progress} label={`${level.into} / ${XP_PER_LEVEL} XP`} />
           <p className="level-card__hint">
-            {level.nextAt - member.xp} XP until Level {level.level + 1}. You earn XP when a reward is credited.
+            {level.isMax
+              ? `${levelMeta(level.level).name} — every badge and level bonus is unlocked.`
+              : `${level.nextAt - member.xp} XP until Level ${level.level + 1} · ${levelMeta(level.level + 1).name}. You earn XP when a reward is credited.`}
           </p>
+          <Link className="text-link level-card__link" to="/app/levels">
+            Open Level Journey <ArrowRight size={14} />
+          </Link>
 
           <div className="checkin">
             <div className="checkin__copy">

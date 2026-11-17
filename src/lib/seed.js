@@ -604,6 +604,7 @@ export async function seedDB() {
     transactions,
     redemptions,
     tickets,
+    gameRuns: [],
     session: { memberId: null, adminId: null },
   };
 }
